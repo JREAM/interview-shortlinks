@@ -1,0 +1,88 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 10s linear;
+  height: 10vmin;
+  pointer-events: none;
+  margin-top: 40px;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  border-bottom: 12px solid #ffa500;
+}
+
+.App-link {
+  color: #61dafb;
+  cursor: pointer;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.row {
+  width: 60vw;
+  text-align: left;
+  margin: 0 auto;
+}
+
+.left {
+  float: left;
+  width: 50%;
+}
+
+.right {
+  float: right;
+  width: 50%;
+}
+
+input.url {
+  font-size: 16px;
+  padding: 8px 12px;
+  width: 350px;
+}
+
+input.create {
+  font-size: 16px;
+  padding: 8px 12px;
+}
+
+table.records {
+  width: 90%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table.records thead tr td {
+  background: #333;
+  color: #fff;
+  font-weight: bolder;
+  padding: 8px 12px;
+}
+
+table.records tbody tr td {
+  border: 1px dotted #989898;
+  padding: 8px 12px;
+}
+
+a,
+a:visited {
+  color: #342fc3;
+}

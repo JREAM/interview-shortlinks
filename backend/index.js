@@ -1,10 +1,16 @@
 // .env
 require('dotenv-safe').config();
 const { SERVE_HOSTNAME, SERVE_PORT } = require('../src/config.json');
-const express = require('express');
-const cookieSession = require('cookie-session');
+const cookieSession=require('cookie-session');
 const { v4: uuid, v4 } = require('uuid')
-const app=express();
+const cors = require('cors');
+
+const express = require('express');
+const app = express();
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+
+app.use(cors());
 
 // DATABASE  (/.env)
 // mysql-u root-proot-e 'CREATE DATABASE shortlinks'
@@ -12,7 +18,7 @@ const app=express();
 
 const knex = require('knex')({
   client: 'mysql',
-  debug: true,
+  debug: false,
   connection: {
     host : process.env.DB_HOST,
     port : process.env.DB_PORT,
@@ -75,19 +81,41 @@ app.get(
  */
 app.post(
   '/api/links', // Im leaving it PLURAL so it follows REST get/post convention (though its not LITERALLY plural)
-  (req, res, next)=> {
+  (req, res)=> {
 
     // Could do UPSERT on the UUID but its just a mockup who cares, and the USER would want to know an UPDATE happened to an existing URL.
-    const url = req
+    const url = req.body.url
     const uuid = v4(url)
 
     const payload={
       uuid, url
     }
+    // return res.json(payload)
     console.log(payload)
+
     knex('links').insert(payload).then((data) => {
-      return res.json({ error: false, result: data, payload })
+      return res.json({ error: false, result: data })
     }).catch((e) => {
+      console.log(e)
+      return res.json({ error: true, e })
+    });
+  }
+)
+
+/**
+ * API: DELETE link
+ */
+app.post(
+  '/api/links', // Im leaving it PLURAL so it follows REST get/post convention (though its not LITERALLY plural)
+  (req, res)=> {
+
+    // Could do UPSERT on the UUID but its just a mockup who cares, and the USER would want to know an UPDATE happened to an existing URL.
+    const uuid = req.body.uuid
+
+    knex('links').delete('uuid', uuid).then((data) => {
+      return res.json({ error: false, result: data })
+    }).catch((e) => {
+      console.log(e)
       return res.json({ error: true, e })
     });
   }

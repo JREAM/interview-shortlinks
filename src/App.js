@@ -13,12 +13,27 @@ function App() {
   // An effect to fetch the data
   useEffect(() => {
     axios.get(`http://${LINKS_URL}/api/links`)
-    .then((result) => {
-      setLinks(result.data.result);  // ugly to read, but it works
-    }).catch((e) => {
-      console.log(e)
-    });
+      .then((result) => {
+        setLinks(result.data.result);  // ugly to read, but it works
+      }).catch((e) => {
+        console.log(e)
+      });
   }, []);
+
+  const handleDelete=(e) => {
+    e.preventDefault();
+    if (window.confirm('Are you sure you want to Delete?') != true) {
+      return;
+    }
+    // e.target.whatever.parent delete
+    axios.delete(`http://${LINKS_URL}/api/links`)
+      .then(() => {
+        alert('Delete successful')
+      })
+      .catch((e) => {
+        alert('error')
+      })
+  }
 
 
   const handleSubmit=(e) => {
@@ -34,19 +49,31 @@ function App() {
 
     try {
       const postResult = axios.post(`http:${LINKS_URL}/api/links`, {
-        url: e.target.value // Skipping any "validate/cleanup"
+        url: e.target.url.value // Skipping any "validate/cleanup"
       }).then(result => {
+        // console.log(result.data)
         alert('Link Added (Reloading)')
         window.location.reload(true) //
       }).catch(e => {
-        alert('Error: read console');
-        console.log(`http:${LINKS_URL}/api/links`);
-        console.log(e);
+        alert(e)
       })
-      console.log(postResult);
-    } catch (error) {
-      console.log(error)
+    } catch (e) {
+      console.log(e)
+      alert(e)
     }
+  }
+
+  let linkContent;
+  if (links.length>0) {
+    linkContent = links.map(link => (
+      <tr key={link.uuid}>
+        <td>{link.url}</td>
+        <td><a href={`${LINKS_URL}/${link.uuid}`} target="_blank" rel="noopener noreferrer">http://{link.uuid}</a></td>
+        <td><a href="#" onClick={handleDelete} >Delete</a></td>
+      </  tr>
+    ))
+  } else {
+    linkContent = <tr><td colSpan="2">No Links <em className="subtle">(Is the backend running?)</em></td></tr>
   }
 
   // Output
@@ -67,12 +94,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-            {links.map(link => (
-              <tr key={link.uuid}>
-                <td>{link.url}</td>
-                <td><a href={`${LINKS_URL}/${link.uuid}`} target="_blank" rel="noopener noreferrer">http://{link.uuid}</a></td>
-              </tr>
-            ))}
+              {linkContent}
             </tbody>
           </table>
         </div>
